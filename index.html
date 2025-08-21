@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цифровое Завещание</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> <!-- Для шифрования -->
+</head>
+<body>
+    <header>
+        <h1>Цифровое Завещание</h1>
+        <p>Защитите своё цифровое наследие: аккаунты, пароли, сообщения для близких.</p>
+    </header>
+
+    <section id="auth-section">
+        <h2>Вход / Регистрация</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Пароль">
+        <button onclick="register()">Зарегистрироваться</button>
+        <button onclick="login()">Войти</button>
+        <p id="auth-message"></p>
+    </section>
+
+    <section id="legacy-section" style="display: none;">
+        <h2>Создайте своё завещание</h2>
+        <form id="legacy-form">
+            <label>Инструкции по аккаунтам (например, "Удалить VK после смерти"):</label>
+            <textarea id="instructions"></textarea>
+
+            <label>Пароли и логины (в зашифрованном виде):</label>
+            <textarea id="credentials"></textarea>
+
+            <label>Сообщения для близких:</label>
+            <textarea id="messages"></textarea>
+
+            <label>Мастер-пароль для шифрования (запомните его!):</label>
+            <input type="password" id="master-password" required>
+
+            <button type="button" onclick="saveLegacy()">Сохранить и зашифровать</button>
+        </form>
+        <div id="saved-legacy"></div>
+        <button onclick="downloadLegacy()">Скачать завещание как файл</button>
+        <button onclick="logout()">Выйти</button>
+    </section>
+
+    <footer>
+        <p>© 2025 Цифровое Завещание. Все данные шифруются локально. Не является юридическим документом.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
