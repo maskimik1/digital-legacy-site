@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Цифровое Завещание</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Иконки -->
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> <!-- Для шифрования -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>Цифровое Завещание</h1>
-        <p>Защитите своё цифровое наследие: аккаунты, пароли, сообщения для близких.</p>
+        <h1><i class="fas fa-shield-alt"></i> Цифровое Завещание</h1>
+        <p>Защитите своё наследие: создайте, зашифруйте и поделитесь.</p>
     </header>
 
     <section id="auth-section">
@@ -23,29 +25,44 @@
     </section>
 
     <section id="legacy-section" style="display: none;">
-        <h2>Создайте своё завещание</h2>
+        <h2>Составьте завещание</h2>
+        <div id="checklist">
+            <h3>Чеклист:</h3>
+            <ul>
+                <li><input type="checkbox"> Добавьте инструкции</li>
+                <li><input type="checkbox"> Укажите контакты</li>
+                <li><input type="checkbox"> Зашифруйте</li>
+            </ul>
+        </div>
         <form id="legacy-form">
-            <label>Инструкции по аккаунтам (например, "Удалить VK после смерти"):</label>
+            <label>Инструкции по аккаунтам:</label>
             <textarea id="instructions"></textarea>
+            <button type="button" onclick="loadTemplate('instructions')">Шаблон: Удалить соцсети</button>
 
-            <label>Пароли и логины (в зашифрованном виде):</label>
+            <label>Пароли и логины:</label>
             <textarea id="credentials"></textarea>
 
             <label>Сообщения для близких:</label>
             <textarea id="messages"></textarea>
+            <button type="button" onclick="loadTemplate('messages')">Шаблон: Прощальное письмо</button>
 
-            <label>Мастер-пароль для шифрования (запомните его!):</label>
+            <label>Доверенные контакты (email):</label>
+            <input type="email" id="contact1" placeholder="Email 1">
+            <input type="email" id="contact2" placeholder="Email 2">
+
+            <label>Мастер-пароль:</label>
             <input type="password" id="master-password" required>
 
-            <button type="button" onclick="saveLegacy()">Сохранить и зашифровать</button>
+            <button type="button" onclick="saveLegacy()">Сохранить</button>
         </form>
         <div id="saved-legacy"></div>
-        <button onclick="downloadLegacy()">Скачать завещание как файл</button>
+        <button onclick="sendLegacy()">Отправить контактам (симуляция)</button>
+        <button onclick="downloadLegacy()">Скачать</button>
         <button onclick="logout()">Выйти</button>
     </section>
 
     <footer>
-        <p>© 2025 Цифровое Завещание. Все данные шифруются локально. Не является юридическим документом.</p>
+        <p>© 2025. Безопасно и конфиденциально.</p>
     </footer>
 
     <script src="script.js"></script>
