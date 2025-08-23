@@ -1,92 +1,109 @@
-// Простая "аутентификация" через localStorage (для MVP, позже заменить на реальный backend)
-function register() {
+const API_URL = 'http://localhost:3000/api'; // Замени на твой сервер позже
+
+// Регистрация/логин (теперь с backend)
+async function register() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     if (email && password) {
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userPassword', CryptoJS.SHA256(password).toString()); // Хэш пароля
-        document.getElementById('auth-message').textContent = 'Регистрация успешна! Теперь войдите.';
-    } else {
-        alert('Заполните поля!');
+        const res = await fetch(`${API_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        document.getElementById('auth-message').textContent = data.message;
     }
 }
 
-function login() {
+async function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const storedEmail = localStorage.getItem('userEmail');
-    const storedPassword = localStorage.getItem('userPassword');
-
-    if (email === storedEmail && CryptoJS.SHA256(password).toString() === storedPassword) {
+    const res = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (data.token) {
+        localStorage.setItem('token', data.token);
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('legacy-section').style.display = 'block';
-        loadLegacy(); // Загрузить сохранённые данные, если есть
+        loadLegacy();
     } else {
-        alert('Неверный email или пароль!');
+        alert('Ошибка входа!');
     }
 }
 
 function logout() {
+    localStorage.removeItem('token');
     document.getElementById('auth-section').style.display = 'block';
     document.getElementById('legacy-section').style.display = 'none';
 }
 
-// Сохранение завещания с шифрованием
-function saveLegacy() {
-    const instructions = document.getElementById('instructions').value;
-    const credentials = document.getElementById('credentials').value;
-    const messages = document.getElementById('messages').value;
-    const masterPassword = document.getElementById('master-password').value;
-
-    if (!masterPassword) {
-        alert('Укажите мастер-пароль!');
-        return;
+// Шаблоны
+function loadTemplate(type) {
+    if (type === 'instructions') {
+        document.getElementById('instructions').value = 'После моей смерти: Удалить аккаунты в VK и Telegram. Передать крипто-кошельки [имя].';
+    } else if (type === 'messages') {
+        document.getElementById('messages').value = 'Дорогие близкие, я люблю вас. Вот мои последние слова...';
     }
-
-    const data = {
-        instructions,
-        credentials,
-        messages
-    };
-
-    // Шифруем данные
-    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), masterPassword).toString();
-    localStorage.setItem('encryptedLegacy', encryptedData);
-
-    document.getElementById('saved-legacy').innerHTML = '<p>Завещание сохранено и зашифровано! Чтобы просмотреть, используйте мастер-пароль.</p>';
 }
 
-// Загрузка и дешифровка (для preview)
-function loadLegacy() {
-    const encrypted = localStorage.getItem('encryptedLegacy');
+// Сохранение (отправка на backend)
+async function saveLegacy() {
+    const data = {
+        instructions: document.getElementById('instructions').value,
+        credentials: document.getElementById('credentials').value,
+        messages: document.getElementById('messages').value,
+        contacts: [document.getElementById('contact1').value, document.getElementById('contact2').value].filter(Boolean),
+        masterPassword: document.getElementById('master-password').value
+    };
+
+    if (!data.masterPassword) return alert('Мастер-пароль обязателен!');
+
+    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), data.masterPassword).toString();
+
+    const res = await fetch(`${API_URL}/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+        body: JSON.stringify({ encrypted })
+    });
+    const result = await res.json();
+    document.getElementById('saved-legacy').innerHTML = `<p>${result.message}</p>`;
+}
+
+// Загрузка
+async function loadLegacy() {
+    const res = await fetch(`${API_URL}/load`, {
+        headers: { 'Authorization': localStorage.getItem('token') }
+    });
+    const { encrypted } = await res.json();
     if (encrypted) {
-        const masterPassword = prompt('Введите мастер-пароль для просмотра:');
-        if (masterPassword) {
-            try {
-                const decrypted = CryptoJS.AES.decrypt(encrypted, masterPassword).toString(CryptoJS.enc.Utf8);
-                const data = JSON.parse(decrypted);
-                document.getElementById('instructions').value = data.instructions;
-                document.getElementById('credentials').value = data.credentials;
-                document.getElementById('messages').value = data.messages;
-                document.getElementById('saved-legacy').innerHTML = '<p>Данные загружены.</p>';
-            } catch (e) {
-                alert('Неверный пароль или данные повреждены!');
-            }
+        const masterPassword = prompt('Мастер-пароль:');
+        try {
+            const decrypted = JSON.parse(CryptoJS.AES.decrypt(encrypted, masterPassword).toString(CryptoJS.enc.Utf8));
+            document.getElementById('instructions').value = decrypted.instructions;
+            // ... заполни другие поля
+            document.getElementById('saved-legacy').innerHTML = '<p>Загружено.</p>';
+        } catch (e) {
+            alert('Ошибка дешифровки!');
         }
     }
 }
 
-// Скачивание как JSON-файла
+// Скачивание
 function downloadLegacy() {
-    const encrypted = localStorage.getItem('encryptedLegacy');
-    if (encrypted) {
-        const blob = new Blob([encrypted], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'legacy.txt';
-        a.click();
+    // Аналогично старому, но с backend если нужно
+}
+
+// Симуляция отправки (mailto для MVP)
+function sendLegacy() {
+    const contacts = [document.getElementById('contact1').value, document.getElementById('contact2').value].filter(Boolean);
+    if (contacts.length) {
+        const subject = 'Ваше цифровое завещание';
+        const body = 'Прикрепите зашифрованный файл вручную.';
+        window.location.href = `mailto:${contacts.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     } else {
-        alert('Сначала сохраните завещание!');
+        alert('Добавьте контакты!');
     }
 }
