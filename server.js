@@ -1,64 +1,73 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const crypto = require('crypto-js'); // Уже есть
-const jwt = require('jsonwebtoken'); // npm install jsonwebtoken
-const nodemailer = require('nodemailer'); // Для будущей отправки
+const crypto = require('crypto-js');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 app.use(express.json());
+app.use(express.static('public')); // Папка public для frontend (index.html, style.css, script.js)
 
-const SECRET = 'your-secret-key'; // Замени
+const SECRET = 'your-secret-key'; // Замени на сгенерированный: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+const USERS_FILE = path.join(__dirname, 'users.json');
 
-mongoose.connect('mongodb+srv://your-mongo-url', { useNewUrlParser: true });
-
-const User = mongoose.model('User', { email: String, password: String, encryptedLegacy: String });
+// Загрузка пользователей из файла (если нет — создаём пустой)
+let users = [];
+if (fs.existsSync(USERS_FILE)) {
+  users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+}
 
 // Регистрация
-app.post('/register', async (req, res) => {
-    const { email, password } = req.body;
-    const hashed = crypto.SHA256(password).toString();
-    const user = new User({ email, password: hashed });
-    await user.save();
-    res.json({ message: 'Зарегистрировано!' });
+app.post('/api/register', (req, res) => {
+  const { email, password } = req.body;
+  const hashed = crypto.SHA256(password).toString();
+  if (users.find(u => u.email === email)) {
+    return res.status(400).json({ message: 'Email занят' });
+  }
+  users.push({ email, password: hashed, encryptedLegacy: null });
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  res.json({ message: 'Зарегистрировано!' });
 });
 
 // Логин
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    const hashed = crypto.SHA256(password).toString();
-    const user = await User.findOne({ email, password: hashed });
-    if (user) {
-        const token = jwt.sign({ id: user._id }, SECRET);
-        res.json({ token });
-    } else {
-        res.status(401).json({ message: 'Ошибка' });
-    }
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  const hashed = crypto.SHA256(password).toString();
+  const user = users.find(u => u.email === email && u.password === hashed);
+  if (user) {
+    const token = jwt.sign({ email }, SECRET);
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: 'Ошибка' });
+  }
 });
 
 // Middleware для auth
 const auth = (req, res, next) => {
-    const token = req.headers.authorization;
-    try {
-        const decoded = jwt.verify(token, SECRET);
-        req.userId = decoded.id;
-        next();
-    } catch (e) {
-        res.status(401).json({ message: 'Не авторизовано' });
-    }
+  const token = req.headers.authorization;
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    req.userEmail = decoded.email;
+    next();
+  } catch (e) {
+    res.status(401).json({ message: 'Не авторизовано' });
+  }
 };
 
 // Сохранение
-app.post('/save', auth, async (req, res) => {
-    const { encrypted } = req.body;
-    await User.updateOne({ _id: req.userId }, { encryptedLegacy: encrypted });
-    res.json({ message: 'Сохранено!' });
+app.post('/api/save', auth, (req, res) => {
+  const { encrypted } = req.body;
+  const user = users.find(u => u.email === req.userEmail);
+  user.encryptedLegacy = encrypted;
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  res.json({ message: 'Сохранено!' });
 });
 
 // Загрузка
-app.get('/load', auth, async (req, res) => {
-    const user = await User.findById(req.userId);
-    res.json({ encrypted: user.encryptedLegacy });
+app.get('/api/load', auth, (req, res) => {
+  const user = users.find(u => u.email === req.userEmail);
+  res.json({ encrypted: user.encryptedLegacy });
 });
 
-// Позже добавь /send для реальной email-отправки с nodemailer
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
 
-app.listen(3000, () => console.log('Сервер на 3000'));
+app.listen(3000, () => console.log('Сервер на http://localhost:3000'));
