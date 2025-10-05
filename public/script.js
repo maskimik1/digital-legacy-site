@@ -1,4 +1,5 @@
 const API_URL = window.location.origin + '/api';
+console.log('API URL:', API_URL);
 
 const translations = {
     ru: {
@@ -290,7 +291,6 @@ function showSection(sectionId) {
     });
     window.scrollTo(0, 0);
     
-    // Сохраняем текущий раздел в localStorage
     localStorage.setItem('currentSection', sectionId);
     
     if (sectionId === 'premium-section') {
@@ -508,6 +508,11 @@ function handleAuth() {
             closeModal('auth-modal');
             document.getElementById('2fa-code').value = '';
             document.getElementById('2fa-modal').style.display = 'flex';
+            
+            // Если email не отправился, показываем код в alert
+            if (data.debug_code) {
+                alert(`Код подтверждения: ${data.debug_code}\n\nEmail не отправлен. Используйте этот код для входа.`);
+            }
         } else {
             document.getElementById('modal-message').textContent = data.message || translations[lang].error;
         }
@@ -777,7 +782,6 @@ function loadProfile() {
             document.getElementById('last-login').innerHTML = `${translations[lang].last_login}: Неизвестно`;
         }
         
-        // Сохраняем подписку в localStorage
         localStorage.setItem('subscription', data.subscription || 'free');
         updateSubscriptionDisplay(data.subscription || 'free');
         updateMasterPasswordButton();
@@ -805,7 +809,6 @@ function loadProfile() {
     .catch(err => {
         console.error("Ошибка загрузки профиля:", err);
         
-        // Если ошибка 401 (Unauthorized), разлогиниваем пользователя
         if (err.message.includes('401')) {
             logout();
             showNotification('Сессия истекла. Пожалуйста, войдите снова.');
@@ -894,7 +897,6 @@ function setupMenuClose() {
         const userSubmenu = document.getElementById('user-submenu');
         
         if (userSubmenu && userSubmenu.style.display === 'block') {
-            // Проверяем, был ли клик вне меню и кнопки меню
             if (!userMenuButton.contains(e.target) && !userSubmenu.contains(e.target)) {
                 userSubmenu.style.display = 'none';
             }
@@ -905,7 +907,6 @@ function setupMenuClose() {
 function setup2FAHandler() {
     const twoFaButton = document.getElementById('2fa-button');
     if (twoFaButton) {
-        // Удаляем старые обработчики и добавляем новый
         twoFaButton.removeEventListener('click', verify2FA);
         twoFaButton.addEventListener('click', verify2FA);
         console.log('2FA handler установлен');
@@ -1072,11 +1073,9 @@ function setupEventListeners() {
         sendLegacyWithMasterPassword(masterPassword);
     });
 
-    // ИСПРАВЛЕНО: Явно устанавливаем обработчик для кнопки 2FA
     setup2FAHandler();
 }
 
-// ИСПРАВЛЕНО: Правильная инициализация при загрузке страницы
 function initializeApp() {
     const theme = localStorage.getItem('theme') || 'dark';
     const lang = localStorage.getItem('language') || 'ru';
@@ -1105,22 +1104,17 @@ function initializeApp() {
     setupMenuClose();
     setup2FAHandler();
 
-    // Восстанавливаем состояние из localStorage
     masterPasswordCreated = localStorage.getItem('masterPasswordCreated') === 'true';
     
-    // ИСПРАВЛЕНО: Проверяем авторизацию и восстанавливаем состояние
     const token = localStorage.getItem('token');
     if (token) {
         try {
-            // Проверяем, не истек ли токен
             const decoded = jwt_decode(token);
             const currentTime = Date.now() / 1000;
             
             if (decoded.exp && decoded.exp > currentTime) {
-                // Токен валиден, восстанавливаем сессию
                 updateNavAfterLogin();
                 
-                // Восстанавливаем последний активный раздел или показываем профиль
                 const lastSection = localStorage.getItem('currentSection');
                 if (lastSection && lastSection !== 'home') {
                     showSection(lastSection);
@@ -1131,7 +1125,6 @@ function initializeApp() {
                 loadProfile();
                 console.log('Сессия восстановлена');
             } else {
-                // Токен истек
                 console.log('Токен истек, выполняем выход');
                 logout();
                 showSection('home');
@@ -1142,7 +1135,6 @@ function initializeApp() {
             showSection('home');
         }
     } else {
-        // Если пользователь не авторизован, показываем главную страницу
         showSection('home');
     }
 
@@ -1156,9 +1148,7 @@ function initializeApp() {
 
 window.onload = initializeApp;
 
-// Сохраняем состояние при закрытии вкладки/браузера
 window.addEventListener('beforeunload', function() {
-    // Сохраняем текущее состояние в localStorage
     const currentSection = localStorage.getItem('currentSection') || 'home';
     localStorage.setItem('lastKnownSection', currentSection);
 });
@@ -1456,6 +1446,10 @@ function sendResetCode() {
             tempToken = data.temp_token;
             document.getElementById('reset-code-group').style.display = 'block';
             showNotification(data.message);
+            
+            if (data.debug_code) {
+                alert(`Код восстановления: ${data.debug_code}\n\nEmail не отправлен. Используйте этот код.`);
+            }
         } else {
             showNotification(data.message);
         }
