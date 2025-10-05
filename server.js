@@ -12,7 +12,7 @@ const CryptoJS = require('crypto-js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const SECRET_KEY = process.env.SECRET_KEY || 'superSecret123!@#qweRty4567890abcDef';
+const SECRET_KEY = process.env.SECRET_KEY || 'pumpologosiki233gotp91239bodreborov';
 
 // Настройка для обслуживания статических файлов
 app.use(express.static(path.join(__dirname, 'public')));
