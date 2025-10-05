@@ -3,68 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Цифровое Завещание</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Иконки -->
+    <title>LegacyNet - Цифровое наследие</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
-<body>
-    <header>
-        <h1><i class="fas fa-shield-alt"></i> Цифровое Завещание</h1>
-        <p>Защитите своё наследие: создайте, зашифруйте и поделитесь.</p>
+<body class="dark">
+
+    <header class="header">
+        <div class="container">
+            <div class="logo" onclick="showSection('home')">
+                <span data-lang="logo">LegacyNet</span>
+                <i class="fas fa-shield-alt logo-shield"></i>
+            </div>
+            <nav class="nav">
+                <button class="green-button" id="register-button" data-lang="registration">Регистрация</button>
+                <button class="green-button" id="login-button" data-lang="login">Вход</button>
+                <button class="green-button" id="user-menu-button" style="display: none;" data-lang="menu">Меню</button>
+                <div id="user-submenu" class="submenu">
+                    <a href="#" data-lang="profile">Профиль</a>
+                    <a href="#" data-lang="settings">Настройки</a>
+                    <a href="#" data-lang="legacy">Завещание</a>
+                    <a href="#" data-lang="premium">Премиум</a>
+                    <a href="#" data-lang="support">Поддержка</a>
+                    <a href="#" data-lang="logout">Выход</a>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <section id="auth-section">
-        <h2>Вход / Регистрация</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Пароль">
-        <button onclick="register()">Зарегистрироваться</button>
-        <button onclick="login()">Войти</button>
-        <p id="auth-message"></p>
-    </section>
-
-    <section id="legacy-section" style="display: none;">
-        <h2>Составьте завещание</h2>
-        <div id="checklist">
-            <h3>Чеклист:</h3>
-            <ul>
-                <li><input type="checkbox"> Добавьте инструкции</li>
-                <li><input type="checkbox"> Укажите контакты</li>
-                <li><input type="checkbox"> Зашифруйте</li>
-            </ul>
+    <section id="home">
+        <div class="hero">
+            <div class="container">
+                <h1 data-lang="hero_title">Защитите своё цифровое наследие с LegacyNet</h1>
+                <p data-lang="hero_description">В эпоху цифровизации ваши аккаунты, фото, крипта и сообщения — это часть вас. LegacyNet помогает создать "цифровое завещание": инструкции, пароли и сообщения для близких. Безопасно, просто, с шифрованием и удобством.</p>
+                <button class="green-button" id="start-free-button" data-lang="start_free">Начать бесплатно</button>
+            </div>
         </div>
-        <form id="legacy-form">
-            <label>Инструкции по аккаунтам:</label>
-            <textarea id="instructions"></textarea>
-            <button type="button" onclick="loadTemplate('instructions')">Шаблон: Удалить соцсети</button>
 
-            <label>Пароли и логины:</label>
-            <textarea id="credentials"></textarea>
-
-            <label>Сообщения для близких:</label>
-            <textarea id="messages"></textarea>
-            <button type="button" onclick="loadTemplate('messages')">Шаблон: Прощальное письмо</button>
-
-            <label>Доверенные контакты (email):</label>
-            <input type="email" id="contact1" placeholder="Email 1">
-            <input type="email" id="contact2" placeholder="Email 2">
-
-            <label>Мастер-пароль:</label>
-            <input type="password" id="master-password" required>
-
-            <button type="button" onclick="saveLegacy()">Сохранить</button>
-        </form>
-        <div id="saved-legacy"></div>
-        <button onclick="sendLegacy()">Отправить контактам (симуляция)</button>
-        <button onclick="downloadLegacy()">Скачать</button>
-        <button onclick="logout()">Выйти</button>
+        <div class="features">
+            <div class="container">
+                <h2 data-lang="why_legacy_net">Почему LegacyNet?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-lock"></i>
+                        <h3 data-lang="secure_encryption">Безопасное шифрование</h3>
+                        <p data-lang="secure_encryption_desc">Все данные зашифрованы end-to-end, как в банковских системах. Мастер-пароль только у вас.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-robot"></i>
+                        <h3 data-lang="ai_generation">Автоматический бэкап</h3>
+                        <p data-lang="ai_generation_desc">Ваши данные надежно сохраняются с автоматическим резервным копированием.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-share-alt"></i>
+                        <h3 data-lang="sharing_with_family">Шаринг с близкими</h3>
+                        <p data-lang="sharing_with_family_desc">Назначьте контакты для автоматической отправки вашего цифрового наследия.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-download"></i>
+                        <h3 data-lang="export_backup">Экспорт и бэкап</h3>
+                        <p data-lang="export_backup_desc">Скачайте завещание в файл или экспортируйте в PDF для нотариуса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <footer>
-        <p>© 2025. Безопасно и конфиденциально.</p>
+    <section id="profile-section" class="profile" style="display: none;">
+        <div class="container">
+            <h2 data-lang="personal_profile">Личный профиль</h2>
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <h3 data-lang="information_security">Информация и безопасность</h3>
+                    <p id="profile-email" data-lang="email_loading">Email: Загрузка...</p>
+                    <div class="status-block">
+                        <span data-lang="legacy_status">Статус завещания:</span>
+                        <span id="status-text" class="status-text">Загрузка...</span>
+                    </div>
+                    <p id="profile-stats" data-lang="statistics">Статистика: Загрузка...</p>
+                    <p id="registration-date" data-lang="registration_date_loading">Дата регистрации: Загрузка...</p>
+                    <p id="last-login" data-lang="last_login_loading">Последний вход: Загрузка...</p>
+                    <p id="current-plan"><span data-lang="current_plan">Текущий тарифный план:</span> <span id="subscription-plan" class="plan-link">Загрузка...</span></p>
+                    <p id="two-factor-status" data-lang="two_factor_auth">Двухфакторная авторизация: Загрузка...</p>
+                    <div class="master-password-section">
+                        <h4>Управление мастер-паролем</h4>
+                        <button class="green-button" id="master-password-button" data-lang="create_master_password">Создать мастер-пароль</button>
+                        <p class="password-hint">Пароль используется для шифрования ваших данных. Убедитесь, что он надежный.</p>
+                    </div>
+                    <button class="green-button" id="contacts-button" data-lang="contacts">Контакты</button>
+                </div>
+                <div class="profile-card profile-legacy">
+                    <h3 data-lang="legacy_management">Управление завещанием</h3>
+                    <button class="green-button" id="go-to-legacy-button" data-lang="go_to_legacy">Перейти к завещанию</button>
+                    <button class="green-button" id="download-legacy-button" data-lang="download">Скачать копию</button>
+                    <p id="last-updated" class="last-updated" data-lang="last_updated">Последнее обновление: —</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="settings-section" class="settings" style="display: none;">
+        <div class="container">
+            <div class="settings-card">
+                <h3 data-lang="theme">Тема</h3>
+                <select id="theme-select" class="styled-select">
+                    <option value="dark">Тёмная</option>
+                    <option value="light">Светлая</option>
+                </select>
+                <h3 data-lang="language">Язык</h3>
+                <select id="language-select" class="styled-select">
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                </select>
+                <h3 data-lang="notifications">Уведомления</h3>
+                <input type="checkbox" id="email-notifications" checked>
+                <label for="email-notifications" data-lang="receive_email_notifications">Получать уведомления на email</label>
+                <div class="actions">
+                    <button class="green-button" id="back-to-profile-button" data-lang="back">Назад</button>
+                    <button class="green-button" id="save-settings" data-lang="save">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="legacy-section" class="legacy" style="display: none;">
+        <div class="container">
+            <h2 data-lang="compose_legacy">Составьте завещание</h2>
+            <p class="warning" data-lang="warning">Предупреждение: Поделитесь мастер-паролем с контактами оффлайн (например, в завещании или у нотариуса). Не отправляйте его по email!</p>
+            
+            <div class="encryption-methods">
+    <h3 data-lang="encryption_method">Метод шифрования:</h3>
+    <div class="encryption-cards">
+        <div class="encryption-card" data-method="master_password">
+            <i class="fas fa-lock encryption-icon"></i>
+            <h4>Шифрование мастер-паролем</h4>
+            <p>Данные шифруются вашим мастер-паролем. Максимальная безопасность. Требуется передать пароль контактам оффлайн.</p>
+        </div>
+        <div class="encryption-card" data-method="email_only">
+            <i class="fas fa-envelope encryption-icon"></i>
+            <h4>Отправка по email</h4>
+            <p>Данные отправляются на email контактов в зашифрованном виде. Пароль для расшифровки отправляется отдельно.</p>
+        </div>
+        <div class="encryption-card selected" data-method="shared_key">
+            <i class="fas fa-key encryption-icon"></i>
+            <h4>Общий ключ доступа</h4>
+            <p>Создается общий ключ, который вы передаете контактам. Данные шифруются этим ключом.</p>
+        </div>
+    </div>
+</div>
+
+            <div class="legacy-tabs">
+                <button class="green-button tab-button" data-tab="social" data-lang="social_networks">Соцсети</button>
+                <button class="green-button tab-button" data-tab="crypto" data-lang="crypto">Крипто</button>
+                <button class="green-button tab-button" data-tab="passwords" data-lang="passwords">Пароли</button>
+                <button class="green-button tab-button" data-tab="messages" data-lang="messages">Сообщения</button>
+            </div>
+
+            <div id="social-tab" class="tab-content">
+                <h3 data-lang="social_networks">Соцсети</h3>
+                <div id="social-accounts"></div>
+                <button class="green-button" id="add-social-button" data-lang="add_account">Добавить аккаунт</button>
+            </div>
+
+            <div id="crypto-tab" class="tab-content">
+                <h3 data-lang="crypto">Крипто</h3>
+                <div id="crypto-wallets"></div>
+                <button class="green-button" id="add-crypto-button" data-lang="add_wallet">Добавить кошелёк</button>
+            </div>
+
+            <div id="passwords-tab" class="tab-content">
+                <h3 data-lang="passwords_logins">Пароли и логины</h3>
+                <textarea id="credentials" data-placeholder="credentials_placeholder">Пароли, логины, инструкции...</textarea>
+            </div>
+
+            <div id="messages-tab" class="tab-content">
+                <h3 data-lang="messages_for_family">Сообщения для близких</h3>
+                <textarea id="messages" data-placeholder="messages_placeholder">Сообщения...</textarea>
+                <button class="green-button" id="generate-ai-button" data-lang="generate_ai">Генерировать AI</button>
+            </div>
+
+            <div class="actions">
+                <button class="green-button" id="save-legacy-button" data-lang="save">Сохранить</button>
+                <button class="green-button" id="send-legacy-button" data-lang="send_to_contacts">Отправить контактам</button>
+                <button class="green-button" id="download-legacy-button-2" data-lang="download">Скачать</button>
+            </div>
+
+            <button class="green-button" id="back-to-profile-button-2" data-lang="back_to_profile">Назад в профиль</button>
+        </div>
+    </section>
+
+    <section id="premium-section" class="premium" style="display: none;">
+        <div class="container">
+            <h2 data-lang="premium_title">Подписка Premium LegacyNet</h2>
+            <p data-lang="premium_description">Получите расширенные возможности для вашего цифрового наследия. Выберите план, подходящий вам.</p>
+            <div class="premium-plans">
+                <div class="plan-card">
+                    <h3 data-lang="free_plan">Free</h3>
+                    <p class="price">0 ₽</p>
+                    <p data-lang="current_plan">Текущий план</p>
+                    <ul>
+                        <li><i class="fas fa-check green-icon"></i> Ограниченное хранилище <br> (1 завещание)</li>
+                        <li><i class="fas fa-check green-icon"></i> До 3 контактов</li>
+                        <li><i class="fas fa-check green-icon"></i> Безопасное шифрование</li>
+                        <li><i class="fas fa-times red-icon"></i> Ограничение по символам (1000)</li>
+                        <li><i class="fas fa-times red-icon"></i> Экспорт в PDF</li>
+                        <li><i class="fas fa-times red-icon"></i> Приоритетная поддержка</li>
+                        <li><i class="fas fa-times red-icon"></i> Симуляция отправки завещания</li>
+                    </ul>
+                </div>
+                <div class="plan-card">
+                    <h3>Premium</h3>
+                    
+                    <div class="price-switcher-container">
+                        <div class="switcher">
+                            <button id="monthly-switch" class="switch-button active" data-lang="premium_monthly">Ежемесячно</button>
+                            <button id="yearly-switch" class="switch-button" data-lang="premium_yearly">Ежегодно<span class="savings-badge">Экономия 52%</span></button>
+                            <div class="switcher-slider"></div>
+                        </div>
+                        
+                        <div class="price-display">
+                            <span class="price-amount" id="price-amount">119</span>
+                            <span class="price-currency">₽</span>
+                            <span class="price-period" id="price-period">/мес</span>
+                        </div>
+                    </div>
+                    
+                    <button class="green-button premium-subscribe" id="subscribe-premium-button" data-lang="subscribe">Подписаться</button>
+                    <ul>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченное хранилище</li>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченные контакты</li>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченные символы</li>
+                        <li><i class="fas fa-check green-icon"></i> Безопасное шифрование</li>
+                        <li><i class="fas fa-check green-icon"></i> Экспорт в PDF</li>
+                        <li><i class="fas fa-check green-icon"></i> Приоритетная поддержка</li>
+                        <li><i class="fas fa-check green-icon"></i> Симуляция отправки завещания</li>
+                    </ul>
+                </div>
+                <div class="plan-card">
+                    <h3>Premium Навсегда</h3>
+                    <p class="price">2799 ₽</p>
+                    <button class="green-button" id="subscribe-lifetime-button" data-lang="subscribe">Подписаться</button>
+                    <ul>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченное хранилище</li>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченные контакты</li>
+                        <li><i class="fas fa-check green-icon"></i> Неограниченные символы</li>
+                        <li><i class="fas fa-check green-icon"></i> Безопасное шифрование</li>
+                        <li><i class="fas fa-check green-icon"></i> Экспорт в PDF</li>
+                        <li><i class="fas fa-check green-icon"></i> Приоритетная поддержка</li>
+                        <li><i class="fas fa-check green-icon"></i> Симуляция отправки завещания</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="green-button" id="back-from-premium-button" data-lang="back">Назад</button>
+        </div>
+    </section>
+
+    <section id="support-section" class="support" style="display: none;">
+        <div class="container">
+            <h2>Центр поддержки</h2>
+            
+            <div class="support-tabs">
+                <button class="green-button tab-button active" data-tab="new-request">Новое обращение</button>
+                <button class="green-button tab-button" data-tab="faq">Частые вопросы</button>
+                <button class="green-button tab-button" data-tab="request-history">История обращений</button>
+            </div>
+
+            <div id="new-request-tab" class="tab-content active">
+                <h3>Создать новое обращение</h3>
+                <div class="form-group">
+                    <label for="support-subject">Тема:</label>
+                    <input type="text" id="support-subject" placeholder="Опишите кратко вашу проблему">
+                </div>
+                <div class="form-group">
+                    <label for="support-message">Сообщение:</label>
+                    <textarea id="support-message" rows="5" placeholder="Подробно опишите вашу проблему или вопрос"></textarea>
+                </div>
+                <button class="green-button" id="send-support-button">Отправить запрос</button>
+            </div>
+
+            <div id="faq-tab" class="tab-content">
+                <h3>Часто задаваемые вопросы</h3>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <h4>Как создать цифровое завещание?</h4>
+                        <p>Перейдите в раздел "Завещание", заполните необходимые данные в соответствующих вкладках и нажмите "Сохранить".</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Как добавить контакты для отправки завещания?</h4>
+                        <p>В разделе "Профиль" нажмите кнопку "Контакты" и добавьте email адреса получателей.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Какие методы шифрования доступны?</h4>
+                        <p>Доступно три метода: шифрование мастер-паролем, отправка по email и общий ключ доступа.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Как восстановить доступ к аккаунту?</h4>
+                        <p>Используйте функцию "Восстановление пароля" на странице входа в систему.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="request-history-tab" class="tab-content">
+                <h3>История ваших обращений</h3>
+                <div id="support-requests-list">
+                    <p class="no-requests">У вас пока нет обращений в поддержку</p>
+                </div>
+            </div>
+
+            <button class="green-button" id="back-from-support-button">Назад</button>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p data-lang="copyright">© 2025 LegacyNet. Все права защищены.</p>
+            <div class="footer-links">
+                <a href="#" data-lang="privacy_policy">Политика конфиденциальности</a>
+                <a href="#" data-lang="terms_of_use">Условия использования</a>
+                <a href="#" id="claim-legacy-link" data-lang="claim_legacy">Претензия на завещание</a>
+            </div>
+        </div>
     </footer>
 
+    <!-- Модал авторизации -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-auth-modal">&times;</span>
+            <h2 id="modal-title" data-lang="auth_title">Регистрация / Вход</h2>
+            <p id="modal-message"></p>
+            <div class="form-group">
+                <label for="modal-email" data-lang="email">Email:</label>
+                <input type="email" id="modal-email">
+            </div>
+            <div class="form-group">
+                <label for="modal-password" data-lang="password">Пароль:</label>
+                <input type="password" id="modal-password">
+            </div>
+            <div class="form-group" id="confirm-password-group">
+                <label for="modal-confirm-password" data-lang="confirm_password">Подтвердите пароль:</label>
+                <input type="password" id="modal-confirm-password">
+            </div>
+            <button class="green-button" id="modal-button" data-lang="confirm">Подтвердить</button>
+            <p id="forgot-password-link" data-lang="forgot_password">Забыли пароль?</p>
+        </div>
+    </div>
+
+    <!-- Модал 2FA -->
+    <div id="2fa-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-2fa-modal">&times;</span>
+            <h2 data-lang="enter_code">Введите 6-значный код</h2>
+            <p data-lang="code_sent">Код отправлен на вашу почту.</p>
+            <div class="form-group">
+                <input type="text" id="2fa-code" maxlength="6" placeholder="000000">
+            </div>
+            <button id="2fa-button" class="green-button" data-lang="confirm">Подтвердить</button>
+        </div>
+    </div>
+
+    <!-- Модал восстановления пароля -->
+    <div id="reset-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-reset-modal">&times;</span>
+            <h2 data-lang="reset_password">Восстановление пароля</h2>
+            <div class="form-group">
+                <label for="reset-email" data-lang="email">Email:</label>
+                <input type="email" id="reset-email">
+                <button class="green-button" id="send-reset-code-button" data-lang="send_code">Отправить код</button>
+            </div>
+            <div id="reset-code-group" style="display: none;">
+                <div class="form-group">
+                    <label for="reset-code" data-lang="code">Код:</label>
+                    <input type="text" id="reset-code" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="new-password" data-lang="new_password">Новый пароль:</label>
+                    <input type="password" id="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password" data-lang="confirm_new_password">Подтвердите новый пароль:</label>
+                    <input type="password" id="confirm-new-password">
+                </div>
+                <button class="green-button" id="reset-password-button" data-lang="reset">Сменить пароль</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал контактов -->
+    <div id="contacts-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-contacts-modal">&times;</span>
+            <h2 data-lang="contacts">Контакты</h2>
+            <div id="contacts-list"></div>
+            <button class="green-button" id="add-contact-button" data-lang="add_contact">Добавить</button>
+            <button class="green-button" id="save-contacts-button" data-lang="save">Сохранить</button>
+        </div>
+    </div>
+
+    <!-- Модал претензии -->
+    <div id="claim-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-claim-modal">&times;</span>
+            <h2 data-lang="claim_legacy">Претензия на завещание</h2>
+            <p id="claim-message"></p>
+            <div class="form-group">
+                <label for="claim-email" data-lang="email">Email:</label>
+                <input type="email" id="claim-email">
+            </div>
+            <div class="form-group">
+                <label for="claim-code" data-lang="claim_code">Код претензии:</label>
+                <input type="text" id="claim-code">
+            </div>
+            <div class="form-group">
+                <label for="claim-master-password" data-lang="master_password">Мастер-пароль:</label>
+                <input type="password" id="claim-master-password">
+            </div>
+            <button class="green-button" id="claim-legacy-button" data-lang="get">Получить</button>
+            <div id="claim-result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Модал смены пароля -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-password-modal">&times;</span>
+            <h2 id="master-password-title">Создать мастер-пароль</h2>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="new-master-password">Новый мастер-пароль:</label>
+                    <input type="password" id="new-master-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-master-password">Подтвердите мастер-пароль:</label>
+                    <input type="password" id="confirm-new-master-password" required>
+                </div>
+                <button type="submit" class="green-button" id="master-password-submit">Создать мастер-пароль</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Новый модал для ввода мастер-пароля при отправке -->
+    <div id="master-password-send-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-master-password-send-modal">&times;</span>
+            <h2>Введите мастер-пароль</h2>
+            <p>Для отправки завещания с выбранным методом шифрования требуется мастер-пароль.</p>
+            <div class="form-group">
+                <label for="master-password-for-send">Мастер-пароль:</label>
+                <input type="password" id="master-password-for-send" required>
+            </div>
+            <button class="green-button" id="master-password-send-button">Подтвердить и отправить</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
